@@ -6,7 +6,7 @@ steps:
   settings:
     repo: us.gcr.io/cloudrun-284100/road-to-kubernetes
     registry: us.gcr.io 
-    auto_tag: true
+    tag: ${DRONE_COMMIT_SHA}
     username: _json_key
     password:
       from_secret: gcr_password
