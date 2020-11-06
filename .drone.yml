@@ -20,7 +20,6 @@ steps:
       from_secret: gcr_password
     TF_VAR_image_tag: ${DRONE_COMMIT_SHA}
   commands:
-  - pushd terraform
+  - cd terraform
   - terraform init
   - terraform apply -auto-approve
-  - popd
