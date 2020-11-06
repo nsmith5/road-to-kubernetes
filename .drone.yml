@@ -5,6 +5,7 @@ steps:
   image: plugins/docker
   settings:
     repo: us.gcr.io/cloudrun-284100/road-to-kubernetes
+    registry: us.gcr.io 
     auto_tag: true
     username: _json_key
     password:
