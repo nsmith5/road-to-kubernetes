@@ -1,8 +1,17 @@
 from flask_api import FlaskAPI
 import redis
 
+config = {
+    "redis_host": os.environ.get("REDIS_HOST", 'localhost'),
+    "redis_port": int(os.environ.get("REDIS_PORT", '6379'),
+    "bind_address": os.environ.get("BIND_ADDRESS", '0.0.0.0'),
+    "bind_port": int(os.environ.get("BIND_PORT", "5000"))
+}
 app = FlaskAPI(__name__)
-db = redis.Redis(host='localhost', port=6379)
+db = redis.Redis(
+    host=config["redis_host"],
+    port=config["redis_port"]
+)
 
 
 @app.route("/<string:key>/")
@@ -17,4 +26,7 @@ def summary():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(
+        host=config["bind_address"],
+        port=config["bind_port"]
+    )
