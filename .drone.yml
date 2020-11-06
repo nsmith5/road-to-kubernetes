@@ -36,7 +36,7 @@ steps:
   commands:
   - printf "%s" "$${GOOGLE_KEY}" > /key.json
   - gcloud auth activate-service-account --key-file=/key.json
-  - gcloud container clusters get-credentials primary 
+  - gcloud container clusters get-credentials rtk-gke --region us-central1
   when:
     branch:
     - main

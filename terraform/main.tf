@@ -21,7 +21,7 @@ resource "google_compute_subnetwork" "subnet" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "${var.project_id}-gke"
+  name     = "rtk-gke"
   location = "us-central1"
 
   remove_default_node_pool = true
@@ -36,7 +36,7 @@ resource "google_container_node_pool" "primary_nodes" {
   name       = "${google_container_cluster.primary.name}-node-pool"
   location   = "us-central1"
   cluster    = google_container_cluster.primary.name
-  node_count = 2
+  node_count = 1
 
   node_config {
     oauth_scopes = [
@@ -45,7 +45,7 @@ resource "google_container_node_pool" "primary_nodes" {
     ]
 
     labels = {
-      env = var.project_id
+      env = "rtk"
     }
 
     preemptible  = true
