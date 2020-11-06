@@ -2,25 +2,25 @@
 
 _From VM to Kubernetes | One Python app's Journey_
 
-Welcome to 4.0! We're full on Kubernetes now and we're Cloud agnostic!
+Hey there! This repository is a journey in continuous integration and
+containers through 4 releases:
 
-We now use Terraform to deploy the Kubernetes cluster but not the application.
-Our application is bundled in a Helm Chart. It can be deployed to GCP, but also
-any other Kubernetes cluster. We run Redis in a `StatefulSet` with persistent
-volumes to save our data and we run our Python web servers in a `Deployment` for
-easy horizontal scaling.
+- [Release 1.0.0](https://github.com/nsmith5/road-to-kubernetes/tree/1.0.0) is
+a basic "SSH to prod and pull updates" type situations. Everything is manual and
+hard to reproduce.
+- [Release 2.0.0](https://github.com/nsmith5/road-to-kubernetes/tree/2.0.0) is
+the start of automation and containers. We use docker-compose to make our dev
+environment reproducable and use a CI pipeline to produce containers for all
+commits on `main`.
+- [Release 3.0.0](https://github.com/nsmith5/road-to-kubernetes/tree/3.0.0) scales
+out this setup by running stateless web application in a serverless container
+service (Googles Cloud Run) and moves databases to managed cloud services
+(hosted Google Redis instance here). We control everything with Terraform.
+- [Release 4.0.0](https://github.com/nsmith5/road-to-kubernetes/tree/4.0.0) breaks
+out of cloud vendor lock-in and ships the project as a Helm chart. We continue
+to use Terraform to deploy the production cluster, but the application can
+run on any cluster.
 
-![GitHub Logo](/docs/diagram.png)
+Navigate to each tag to learn more!
 
-**Local Development**
-
-Local development is the same as before, simple run `docker-compose up` or run
-`helm install {release-name} chart` to install in a local Kubernetes clusters
-(e.g minikube).
-
-**Deployment**
-
-No need! We deploy automatically on every commit to `main`.
-
-Still want to do it manually? Run `helm install road-to-kubernetes chart --set
-image.tag={commit-sha}` while connected to the production cluster in GCP.
+> Made with ❤️  in Vancouver, CA.
