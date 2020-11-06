@@ -7,8 +7,8 @@ steps:
     repo: nsmith5/road-to-kubernetes
     auto_tag: true
     username: nsmith5
-	password:
-	  from_secret: docker_password
+    password:
+      from_secret: docker_password
   when:
     branch:
     - main
