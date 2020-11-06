@@ -1,3 +1,5 @@
+import os
+
 from flask_api import FlaskAPI
 import redis
 
