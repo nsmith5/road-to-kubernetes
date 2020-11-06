@@ -24,7 +24,7 @@ $ pipenv run python main.py
 
 **Deployment**
 
-Give your SSH public key to <<Insert lead dev or grumpy sysadmin name here>>
+Give your SSH public key to `{{Insert lead dev or grumpy sysadmin name here}}`
 and she will copy your key into the production server.
 
 SSH into the prod server run the same commands as above.
