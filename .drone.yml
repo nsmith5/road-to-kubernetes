@@ -16,10 +16,12 @@ steps:
 - name: terraform
   image: hashicorp/terraform
   environment:
-    GOOGLE_APPLICATION_CREDENTIALS:
+    GOOGLE_KEY:
       from_secret: gcr_password
+    GOOGLE_APPLICATION_CREDENTIALS: /key.json
     TF_VAR_image_tag: ${DRONE_COMMIT_SHA}
   commands:
+  - printf "%s" "$${GOOGLE_KEY}" > /key.json
   - cd terraform
   - terraform init
   - terraform apply -auto-approve
