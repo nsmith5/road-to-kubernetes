@@ -15,6 +15,15 @@ spec:
       containers:
         - name: web
           image: "us.gcr.io/cloudrun-284100/road-to-kubernetes:{{ .Values.image.tag }}"
+          env:
+          - name: BIND_ADDRESS
+            value: "0.0.0.0"
+          - name: BIND_PORT
+            value: "5000"
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PORT
+            value: "6379"
           ports:
           - name: http
             containerPort: 5000
