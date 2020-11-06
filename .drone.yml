@@ -18,6 +18,8 @@ steps:
     SSH_KEY:
       from_secret: deploy_key
   commands:
+  - dnf install openssh-clients -y
+  - eval `ssh-agent`
   - ssh-add - <<< $$SSH_KEY
   - ssh root@road-to-kubernetes.nfsmith.ca "pushd /opt/road-to-kubernetes && git pull && docker-compose build && docker-compose restart web && popd"
   when:
