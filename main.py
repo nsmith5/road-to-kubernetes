@@ -3,7 +3,7 @@ import redis
 
 config = {
     "redis_host": os.environ.get("REDIS_HOST", 'localhost'),
-    "redis_port": int(os.environ.get("REDIS_PORT", '6379'),
+    "redis_port": int(os.environ.get("REDIS_PORT", '6379')),
     "bind_address": os.environ.get("BIND_ADDRESS", '0.0.0.0'),
     "bind_port": int(os.environ.get("BIND_PORT", "5000"))
 }
