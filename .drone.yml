@@ -21,7 +21,7 @@ steps:
   - dnf install openssh-clients -y
   - eval `ssh-agent`
   - ssh-add - <<< $$SSH_KEY
-  - ssh o "StrictHostKeyChecking=no" root@road-to-kubernetes.nfsmith.ca "pushd /opt/road-to-kubernetes && git pull && docker-compose build && docker-compose restart web && popd"
+  - ssh -o "StrictHostKeyChecking=no" root@road-to-kubernetes.nfsmith.ca "pushd /opt/road-to-kubernetes && git pull && docker-compose build && docker-compose restart web && popd"
   when:
     branch:
     - main
