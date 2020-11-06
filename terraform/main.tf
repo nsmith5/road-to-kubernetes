@@ -2,84 +2,57 @@ provider "google" {
   project = "cloudrun-284100"
 }
 
-resource "google_project_service" "run" {
-  service = "run.googleapis.com"
-}
-
-resource "google_project_service" "redis" {
-  service = "redis.googleapis.com"
-}
-
-resource "google_project_service" "vpcaccess" {
-  service = "vpcaccess.googleapis.com"
-}
-
 resource "google_container_registry" "registry" {
   project  = "cloudrun-284100"
   location = "US"
 }
 
-resource "google_redis_instance" "cache" {
-  name           = "cache"
-  memory_size_gb = 1
-  region         = "us-central1"
-
-  depends_on = [google_project_service.redis]
+resource "google_compute_network" "vpc" {
+  name                    = "rtk-vpc"
+  auto_create_subnetworks = "false"
 }
 
-resource "google_vpc_access_connector" "connector" {
-    name          = "vpcconn"
-    region        = "us-central1"
-    ip_cidr_range = "10.8.0.0/28"
-    network       = "default"
-
-    depends_on = [google_project_service.vpcaccess]
+# Subnet
+resource "google_compute_subnetwork" "subnet" {
+  name          = "rtk-subnet"
+  region        = "us-central1"
+  network       = google_compute_network.vpc.name
+  ip_cidr_range = "10.10.0.0/24"
 }
 
-resource "google_cloud_run_service" "my-service" {
-  name     = "road-to-kubernetes"
+resource "google_container_cluster" "primary" {
+  name     = "${var.project_id}-gke"
   location = "us-central1"
 
-  template {
-    spec {
-      containers {
-        image = "us.gcr.io/cloudrun-284100/road-to-kubernetes:${var.image_tag}"
-        env {
-          name  = "BIND_PORT"
-          value = "8080"
-        }
-        env {
-          name  = "REDIS_HOST"
-          value = google_redis_instance.cache.host
-        }
-        env {
-          name  = "REDIS_PORT"
-          value = google_redis_instance.cache.port
-        }
-      }
-    }
-    
-    metadata {
-      annotations = {
-        "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.name
-      }
-    }
-  }
+  remove_default_node_pool = true
+  initial_node_count       = 1
 
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-
-  depends_on = [
-    google_project_service.run,
-    google_vpc_access_connector.connector
-  ]
+  network    = google_compute_network.vpc.name
+  subnetwork = google_compute_subnetwork.subnet.name
 }
 
-resource "google_cloud_run_service_iam_member" "allUsers" {
-  service  = google_cloud_run_service.my-service.name
-  location = google_cloud_run_service.my-service.location
-  role     = "roles/run.invoker"
-  member   = "allUsers"
+# Separately Managed Node Pool
+resource "google_container_node_pool" "primary_nodes" {
+  name       = "${google_container_cluster.primary.name}-node-pool"
+  location   = "us-central1"
+  cluster    = google_container_cluster.primary.name
+  node_count = 2
+
+  node_config {
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+
+    labels = {
+      env = var.project_id
+    }
+
+    preemptible  = true
+    machine_type = "n1-standard-1"
+    tags         = ["gke-node", "rtk-gke"]
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+  }
 }

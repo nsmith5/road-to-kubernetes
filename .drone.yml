@@ -19,9 +19,24 @@ steps:
     GOOGLE_KEY:
       from_secret: gcr_password
     GOOGLE_APPLICATION_CREDENTIALS: /key.json
-    TF_VAR_image_tag: ${DRONE_COMMIT_SHA}
   commands:
   - printf "%s" "$${GOOGLE_KEY}" > /key.json
   - cd terraform
   - terraform init
   - terraform apply -auto-approve
+  when:
+    branch:
+    - main
+- name: helm-chart-deploy
+  image: google/cloud-sdk
+  environment: 
+    GOOGLE_KEY:
+      from_secret: gcr_password
+    GOOGLE_APPLICATION_CREDENTIALS: /key.json
+  commands:
+  - printf "%s" "$${GOOGLE_KEY}" > /key.json
+  - gcloud auth activate-service-account --key-file=/key.json
+  - gcloud container clusters get-credentials primary 
+  when:
+    branch:
+    - main
