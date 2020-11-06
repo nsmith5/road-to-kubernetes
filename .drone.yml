@@ -38,6 +38,9 @@ steps:
   - gcloud auth activate-service-account --key-file=/key.json
   - gcloud config set project cloudrun-284100
   - gcloud container clusters get-credentials rtk-gke --region us-central1
+  # Install helm
+  - curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  - helm upgrade road-to-kubernetes chart --set image.tag=${DRONE_COMMIT_SHA}
   when:
     branch:
     - main
