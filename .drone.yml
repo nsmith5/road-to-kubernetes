@@ -13,3 +13,7 @@ steps:
   when:
     branch:
     - main
+- name: terraform
+  image: hashicorp/terraform
+  commands:
+  - echo "hello!"
