@@ -15,5 +15,12 @@ steps:
     - main
 - name: terraform
   image: hashicorp/terraform
+  environment:
+    GOOGLE_APPLICATION_CREDENTIALS:
+      from_secret: gcr_password
+    TF_VAR_image_tag: ${DRONE_COMMIT_SHA}
   commands:
-  - echo "hello!"
+  - pushd terraform
+  - terraform init
+  - terraform apply -auto-approve
+  - popd
