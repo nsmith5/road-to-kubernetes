@@ -19,6 +19,10 @@ resource "google_cloud_run_service" "my-service" {
     spec {
       containers {
         image = "us.gcr.io/cloudrun-284100/road-to-kubernetes:${var.image_tag}"
+        env {
+          name = "BIND_PORT"
+          value = "8080"
+        }
       }
     }
   }
