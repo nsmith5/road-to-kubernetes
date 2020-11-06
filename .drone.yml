@@ -36,6 +36,7 @@ steps:
   commands:
   - printf "%s" "$${GOOGLE_KEY}" > /key.json
   - gcloud auth activate-service-account --key-file=/key.json
+  - gcloud config set project cloudrun-284100
   - gcloud container clusters get-credentials rtk-gke --region us-central1
   when:
     branch:
